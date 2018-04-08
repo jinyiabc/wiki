@@ -1,0 +1,76 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Wiki Viewer</title>
+  </head>
+
+  <body ng-app="myWikiviewer">
+    <div class="content" ng-controller="WikiController">
+
+      <form ng-submit="submit()">
+        Enter text and hit enter:
+        <input type="text" ng-model="text" name="text" />
+        <input type="submit" id="submit" value="Submit" />
+
+        <pre>{{text}}</pre>
+
+            <ul class="">
+              <li class="" ng-repeat="key in (samples.data)[1]">
+                <strong>{{key}}</strong> :
+                <a ng-href="{{(samples.data)[3][$index]}}">{{(samples.data)[2][$index]}}</a>
+
+
+              </li>
+            </ul>
+          </form>
+
+
+    </div>
+    <script src="http://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <script type="text/javascript">
+    angular.module('myWikiviewer',[])
+
+    // myWikiviewer.config(['$sceDelegateProvider', function($sceDelegateProvider) {
+    //   // We must whitelist the JSONP endpoint that we are using to show that we trust it
+    //   $sceDelegateProvider.resourceUrlWhitelist([
+    //     'self',
+    //     'https://en.wikipedia.org/w/api.php**'
+    //   ]);
+    // }])
+
+    .controller('WikiController',['$scope','$http',function($scope,$http){
+
+      $scope.submit = function(){
+      var url = 'https://en.wikipedia.org/w/api.php?format=json&action=query&generator=search&gsrnamespace=0&gsrlimit=10&prop=pageimages|extracts&pilimit=max&exintro&explaintext&exsentences=1&exlimit=max&gsrsearch='+$scope.text+'&callback=JSON_CALLBACK' ;//'data/sample.json';
+
+
+
+      var config = {
+          headers: {
+              'Content-Type':'text/plain',
+          },
+          dataType: 'jsonp'
+      };
+
+       $http.jsonp(url).success(successCallback);   // replace 'data/sample.json' with url
+
+      function successCallback(response){
+            $scope.samples = response
+            //$scope.search_key = response[1];
+            //$scope.search_title = response[2];
+          }
+
+
+
+     };
+
+
+
+    }]);
+
+
+
+    </script>
+  </body>
+</html>
